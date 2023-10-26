@@ -10,9 +10,11 @@ return new class extends Migration
     {
         Schema::create('tareas', function (Blueprint $table) {
             $table->id();
-            $table->string('nombre');
+            $table->string('titulo');
+            $table->string('texto');
             $table->dateTime('fecha_hora_creacion');
-            $table->dateTime('fecha_hora_expiracion');
+            $table->dateTime('fecha_hora_inicio');
+            $table->dateTime('fecha_hora_fin');
             $table->enum('estado', ['activa', 'cancelada', 'en espera', 'finalizada', 'incompleta'])->default('en espera');
             $table->foreignId('id_usuario')->constrained('users');
             $table->softDeletes();

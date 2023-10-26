@@ -13,15 +13,23 @@ class UsuarioComentaTarea extends Model
 
     protected $table = 'usuario_comenta_tarea';
 
+    protected $primaryKey = 'id_usuario';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     protected $fillable = [
         'id_usuario',
         'id_tarea',
         'comentario',
-        'fecha_hora_creacion'
+        'fecha_hora_creacion',
+        'fecha_hora_modificacion'
     ];
 
     protected $dates = [
-        'fecha_hora_creacion'
+        'fecha_hora_creacion',
+        'fecha_hora_modificacion'
     ];
 
     public function usuario()

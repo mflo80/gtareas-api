@@ -12,6 +12,12 @@ class UsuarioAsignaTarea extends Model
 
     protected $table = 'usuario_asigna_tarea';
 
+    protected $primaryKey = 'id_usuario_asignado';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
     public $timestamps = false;
 
     protected $fillable = [
@@ -20,7 +26,7 @@ class UsuarioAsignaTarea extends Model
         'id_tarea',
         'fecha_hora_asignacion',
         'fecha_hora_expiracion',
-        'permisos'
+        'permiso'
     ];
 
     protected $dates = [

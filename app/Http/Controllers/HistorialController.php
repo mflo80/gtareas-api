@@ -3,40 +3,166 @@
 namespace App\Http\Controllers;
 
 use App\Models\Historial;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 
 class HistorialController extends Controller
 {
-    public function index()
+    public function guardar(Request $request)
     {
-        $historiales = Historial::all();
+        try {
+            $historial = new Historial();
+            $historial->id_usuario = $request->post('id_usuario');
+            $historial->id_tarea = $request->post('id_tarea');
+            $historial->fecha_hora_modificacion = now();
+            $historial->save();
 
-        return response()->json($historiales);
+            return response()->json([
+                'status' => true,
+                'message' => 'Historial registrado correctamente.'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
-    public function store(Request $request)
+    public function buscar()
     {
-        $historial = Historial::create($request->all());
+        try {
+            $historial = Historial::all();
 
-        return response()->json($historial, 201);
+            if($historial->isEmpty()) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'No hay historiales registrados.'
+                ], 404);
+            }
+
+            return response()->json([
+                'tareas' => $historial,
+                'status' => true,
+                'message' => 'Historiales encontrados.'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
-    public function show(Historial $historial)
+    public function buscar_historial($id)
     {
-        return response()->json($historial);
+        try {
+            $historial = Historial::findOrFail($id);
+
+            return response()->json([
+                'tarea' => $historial,
+                'status' => true,
+                'message' => 'Historial encontrado.'
+            ], 200);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Historial no encontrado.'
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
-    public function update(Request $request, Historial $historial)
+    public function buscar_tarea($id_tarea)
     {
-        $historial->update($request->all());
+        try {
+            $historial = Historial::findOrFail($id_tarea);
 
-        return response()->json($historial);
+            return response()->json([
+                'tarea' => $historial,
+                'status' => true,
+                'message' => 'Tarea encontrada.'
+            ], 200);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Tarea no encontrada.'
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 
-    public function destroy(Historial $historial)
+    public function buscar_usuario($id_usuario)
     {
-        $historial->delete();
+        try {
+            $historial = Historial::findOrFail($id_usuario);
 
-        return response()->json(null, 204);
+            return response()->json([
+                'tarea' => $historial,
+                'status' => true,
+                'message' => 'Usuario encontrado.'
+            ], 200);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Usuario no encontrado.'
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function modificar(Request $request, Historial $historial)
+    {
+        try {
+            $historial->id_usuario = $request->post('id_usuario');
+            $historial->id_tarea = $request->post('id_tarea');
+            $historial->fecha_hora_modificacion = now();
+            $historial->save();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Historial modificado correctamente.'
+            ], 200);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
+    public function eliminar($id)
+    {
+        try {
+            $historial = Historial::findOrFail($id);
+            $historial->delete();
+
+            return response()->json([
+                'status' => true,
+                'message' => 'Historial eliminado con éxito.'
+            ], 200);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => true,
+                'message' => 'Historial no encontrado.'
+            ], 404);
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
     }
 }

@@ -15,13 +15,17 @@ class Tarea extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'Nombre',
-        'FechaHora_Creacion',
-        'FechaHora_Expiracion',
-        'Estado'];
+        'titulo',
+        'texto',
+        'fecha_hora_creacion',
+        'fecha_hora_inicio',
+        'fecha_hora_fin',
+        'estado'
+    ];
 
     protected $dates = [
-        'FechaHora_Creacion',
-        'FechaHora_Expiracion'
+        'fecha_hora_creacion',
+        'fecha_hora_inicio',
+        'fecha_hora_fin'
     ];
 }
