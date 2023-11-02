@@ -15,7 +15,7 @@ return new class extends Migration
             $table->dateTime('fecha_hora_creacion');
             $table->dateTime('fecha_hora_inicio');
             $table->dateTime('fecha_hora_fin');
-            $table->enum('categoria', ['Análisis', 'Diseño', 'Implementación', 'Verificación', 'Mantenimiento'])->default('Identificación');
+            $table->enum('categoria', ['Análisis', 'Diseño', 'Implementación', 'Verificación', 'Mantenimiento'])->default('Análisis');
             $table->enum('estado', ['Activa', 'Atrasada', 'Cancelada', 'En espera', 'Finalizada'])->default('En espera');
             $table->foreignId('id_usuario')->constrained('users');
             $table->softDeletes();
