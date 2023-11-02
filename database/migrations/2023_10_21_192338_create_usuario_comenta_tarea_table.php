@@ -14,7 +14,7 @@ return new class extends Migration
             $table->foreignId('id_tarea')->constrained('tareas');
             $table->text('comentario');
             $table->dateTime('fecha_hora_creacion');
-            $table->dateTime('fecha_hora_modificacion')->nullable();
+            $table->enum('estado', ['activo', 'eliminado', 'modificado', 'oculto'])->default('activo');
             $table->softDeletes();
         });
     }

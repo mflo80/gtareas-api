@@ -2,7 +2,6 @@
 
 use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\TareaController;
-use App\Http\Controllers\UsuarioAsignaTareaController;
 use App\Http\Controllers\UsuarioComentaTareaController;
 use Illuminate\Support\Facades\Route;
 
@@ -23,16 +22,6 @@ Route::controller(TareaController::class)->group(function () {
     Route::get('/tareas/{tarea}', 'buscar_tarea');
     Route::put('/tareas/{tarea}', 'modificar');
     Route::delete('/tareas/{tarea}', 'eliminar');
-});
-
-Route::controller(UsuarioAsignaTareaController::class)->group(function () {
-    Route::post('/asigna', 'guardar');
-    Route::get('/asigna', 'buscar');
-    Route::get('/asigna/tarea/{id_tarea}', 'buscar_tarea');
-    Route::get('/asigna/usuario/{id_usuario_asignado}', 'buscar_usuario');
-    Route::get('/asigna/usuario/{id_usuario_asignado}/{id_tarea}', 'buscar_usuario_tarea');
-    Route::put('/asigna/usuario/{id_usuario_asignado}/{id_tarea}', 'modificar');
-    Route::delete('/asigna/usuario/{id_usuario_asignado}/{id_tarea}', 'eliminar');
 });
 
 Route::controller(UsuarioComentaTareaController::class)->group(function () {
