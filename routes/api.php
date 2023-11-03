@@ -16,7 +16,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::controller(TareaController::class)->group(function () {
+Route::controller(TareaController::class)
+        ->middleware('checkExternalApiToken')
+        ->group(function () {
     Route::post('/tareas', 'guardar');
     Route::get('/tareas', 'buscar');
     Route::get('/tareas/{tarea}', 'buscar_tarea');
@@ -24,7 +26,9 @@ Route::controller(TareaController::class)->group(function () {
     Route::delete('/tareas/{tarea}', 'eliminar');
 });
 
-Route::controller(UsuarioComentaTareaController::class)->group(function () {
+Route::controller(UsuarioComentaTareaController::class)
+        ->middleware('checkExternalApiToken')
+        ->group(function () {
     Route::post('/comenta', 'guardar');
     Route::get('/comenta', 'buscar');
     Route::get('/comenta/tarea/{id_tarea}', 'buscar_tarea');
@@ -34,7 +38,9 @@ Route::controller(UsuarioComentaTareaController::class)->group(function () {
     Route::delete('/comenta/usuario/{id_usuario}/{id_tarea}/{fecha_hora_creacion}', 'eliminar');
 });
 
-Route::controller(HistorialController::class)->group(function () {
+Route::controller(HistorialController::class)
+        ->middleware('checkExternalApiToken')
+        ->group(function () {
     Route::post('/historial', 'guardar');
     Route::get('/historial', 'buscar');
     Route::get('/historial/{historial}', 'buscar_historial');
