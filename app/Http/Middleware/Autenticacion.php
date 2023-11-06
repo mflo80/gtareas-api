@@ -9,7 +9,7 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckExternalApiToken
+class Autenticacion
 {
     /**
      * Handle an incoming request.
@@ -34,6 +34,7 @@ class CheckExternalApiToken
 
                     $valores = json_decode($response->getBody()->getContents());
                     $usuario = $valores->usuario;
+
                     Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
                 }
             }
@@ -41,12 +42,11 @@ class CheckExternalApiToken
             return $next($request);
 
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            // Si la solicitud devuelve un error 401, el usuario no está autenticado
             if ($e->getResponse()->getStatusCode() == 401) {
-                return response()->json(['error' => 'Unauthenticated.'], 401);
+                return response()->json([
+                    'message' => 'Unauthenticated.'], 401);
             }
 
-            // Si la solicitud devuelve otro error, relanzarlo
             throw $e;
         }
     }

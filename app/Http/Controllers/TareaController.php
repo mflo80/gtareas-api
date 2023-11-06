@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarea;
-use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 

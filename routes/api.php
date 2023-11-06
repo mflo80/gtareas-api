@@ -17,7 +17,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::controller(TareaController::class)
-        ->middleware('checkExternalApiToken')
+        ->middleware('autenticacion')
         ->group(function () {
     Route::post('/tareas', 'guardar');
     Route::get('/tareas', 'buscar');
@@ -27,7 +27,7 @@ Route::controller(TareaController::class)
 });
 
 Route::controller(UsuarioComentaTareaController::class)
-        ->middleware('checkExternalApiToken')
+        ->middleware('autenticacion')
         ->group(function () {
     Route::post('/comenta', 'guardar');
     Route::get('/comenta', 'buscar');
@@ -39,7 +39,7 @@ Route::controller(UsuarioComentaTareaController::class)
 });
 
 Route::controller(HistorialController::class)
-        ->middleware('checkExternalApiToken')
+        ->middleware('autenticacion')
         ->group(function () {
     Route::post('/historial', 'guardar');
     Route::get('/historial', 'buscar');
