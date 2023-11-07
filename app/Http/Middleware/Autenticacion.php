@@ -23,30 +23,31 @@ class Autenticacion
         $client = new Client();
 
         try {
-            if(Cache::get($token) !== null){
-                $ttl = Cache::getPayload($token)['time'] - time();
-                if($ttl <= 600){ // 600 segundos son 10 minutos
-                    $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $token,
-                        ],
-                    ]);
 
-                    $valores = json_decode($response->getBody()->getContents());
-                    $usuario = $valores->usuario;
+            if($token){
+                if(Cache::has($token)){
+                    $ttl = Cache::getPayload($token)['time'] - time();
+                    if($ttl <= 600){ // 600 segundos son 10 minutos
+                        $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
+                            'headers' => [
+                                'Authorization' => 'Bearer ' . $token,
+                            ],
+                        ]);
 
-                    Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
+                        $valores = json_decode($response->getBody()->getContents());
+                        $usuario = $valores->usuario;
+
+                        Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
+                    }
                 }
+
+                return $next($request);
             }
 
-            return $next($request);
+            return response()->json([
+                'message' => 'Unauthenticated.'], 401);
 
         } catch (\GuzzleHttp\Exception\ClientException $e) {
-            if ($e->getResponse()->getStatusCode() == 401) {
-                return response()->json([
-                    'message' => 'Unauthenticated.'], 401);
-            }
-
             throw $e;
         }
     }
