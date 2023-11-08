@@ -20,6 +20,7 @@ class Tarea extends Model
         'fecha_hora_creacion',
         'fecha_hora_inicio',
         'fecha_hora_fin',
+        'categoria',
         'estado'
     ];
 

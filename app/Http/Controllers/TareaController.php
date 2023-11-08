@@ -89,8 +89,8 @@ class TareaController extends Controller
             $tarea->texto = $request->post('texto');
             $tarea->fecha_hora_inicio = $request->post('fecha_hora_inicio');
             $tarea->fecha_hora_fin = $request->post('fecha_hora_fin');
+            $tarea->categoria = $request->post('categoria');
             $tarea->estado = $request->post('estado');
-            $tarea->id_usuario = $request->post('id_usuario');
             $tarea->save();
 
             return response()->json([
