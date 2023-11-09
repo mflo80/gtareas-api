@@ -91,12 +91,20 @@ class TareaController extends Controller
             $tarea->fecha_hora_fin = $request->post('fecha_hora_fin');
             $tarea->categoria = $request->post('categoria');
             $tarea->estado = $request->post('estado');
-            $tarea->save();
+
+            if ($tarea->isDirty()) {
+                $tarea->save();
+                    return response()->json([
+                    'status' => true,
+                    'message' => 'Tarea modificada correctamente.'
+                ], 200);
+            }
 
             return response()->json([
-                'status' => true,
-                'message' => 'Tarea modificada correctamente.'
+                'status' => false,
+                'message' => 'No se ha realizado ninguna modificación.'
             ], 200);
+
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

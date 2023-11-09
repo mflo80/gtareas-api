@@ -23,22 +23,58 @@ class Autenticacion
         $client = new Client();
 
         try {
-
-            if($token){
+            if ($token) {
                 if(Cache::has($token)){
-                    $ttl = Cache::getPayload($token)['time'] - time();
-                    if($ttl <= 600){ // 600 segundos son 10 minutos
-                        $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
-                            'headers' => [
-                                'Authorization' => 'Bearer ' . $token,
-                            ],
-                        ]);
+                    return $next($request);
+                }
 
-                        $valores = json_decode($response->getBody()->getContents());
-                        $usuario = $valores->usuario;
+                $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $token,
+                    ],
+                ]);
 
-                        Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
-                    }
+                $valores = json_decode($response->getBody()->getContents());
+                $usuario = $valores->usuario;
+
+                Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
+
+                return $next($request);
+            }
+
+            return response()->json([
+                'message' => 'Unauthenticated.'], 401);
+
+        } catch (\GuzzleHttp\Exception\ClientException $e) {
+            throw $e;
+        }
+    }
+
+
+    /*
+
+        $token = $request->header('Authorization');
+
+    $client = new Client();
+
+    try {
+        if ($token) {
+            if(Cache::has($token)){
+                $cacheData = Cache::get($token);
+                $usuario = $cacheData['usuario'];
+                $cacheTime = $cacheData['time'];
+
+                if (Carbon::now()->diffInMinutes($cacheTime) >= 20) {
+                    $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
+                        'headers' => [
+                            'Authorization' => 'Bearer ' . $token,
+                        ],
+                    ]);
+
+                    $valores = json_decode($response->getBody()->getContents());
+                    $usuario = $valores->usuario;
+
+                    Cache::put($token, ['usuario' => $usuario, 'time' => Carbon::now()], Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
                 }
 
                 return $next($request);
@@ -51,4 +87,5 @@ class Autenticacion
             throw $e;
         }
     }
+    */
 }
