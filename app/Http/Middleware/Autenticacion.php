@@ -16,76 +16,63 @@ class Autenticacion
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
-    public function handle(Request $request, Closure $next): Response
+    public function handle(Request $request, Closure $next)
     {
         $token = $request->header('Authorization');
 
+        if ($token) {
+            if (Cache::has($token)) {
+                $datos = Cache::get($token);
+                $ultimo_acceso = $datos['ultimo_acceso'];
+
+                if (Carbon::now()->diffInMinutes($ultimo_acceso) >= 20) {
+                    $usuario = $this->getUsuarioFromServer($token);
+                    if (!$usuario) {
+                        return response()->json([
+                            'message' => 'Token no válido.'
+                        ], 401);
+                    }
+                }
+
+                return $next($request);
+            }
+
+            $usuario = $this->getUsuarioFromServer($token);
+
+            if (!$usuario) {
+                return response()->json([
+                    'message' => 'Unauthenticated.'
+                ], 401);
+            }
+
+            return $next($request);
+        }
+
+        return response()->json([
+            'message' => 'Unauthenticated.'
+        ], 401);
+    }
+
+    private function getUsuarioFromServer($token)
+    {
         $client = new Client();
 
         try {
-            if ($token) {
-                if(Cache::has($token)){
-                    return $next($request);
-                }
+            $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
+                'headers' => [
+                    'Authorization' => 'Bearer ' . $token,
+                ],
+            ]);
 
-                $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
-                    'headers' => [
-                        'Authorization' => 'Bearer ' . $token,
-                    ],
-                ]);
-
+            if ($response->getStatusCode() == 200) {
                 $valores = json_decode($response->getBody()->getContents());
                 $usuario = $valores->usuario;
+                Cache::put($token, ['usuario' => $usuario, 'ultimo_acceso' => Carbon::now()], Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
 
-                Cache::put($token, $usuario, Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
-
-                return $next($request);
+                return $usuario;
             }
-
-            return response()->json([
-                'message' => 'Unauthenticated.'], 401);
-
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-            throw $e;
+        } catch (\Exception $e) {
+            return null;
         }
     }
-
-
-    /*
-
-        $token = $request->header('Authorization');
-
-    $client = new Client();
-
-    try {
-        if ($token) {
-            if(Cache::has($token)){
-                $cacheData = Cache::get($token);
-                $usuario = $cacheData['usuario'];
-                $cacheTime = $cacheData['time'];
-
-                if (Carbon::now()->diffInMinutes($cacheTime) >= 20) {
-                    $response = $client->get(getenv('GTOAUTH_AUTENTICADO'), [
-                        'headers' => [
-                            'Authorization' => 'Bearer ' . $token,
-                        ],
-                    ]);
-
-                    $valores = json_decode($response->getBody()->getContents());
-                    $usuario = $valores->usuario;
-
-                    Cache::put($token, ['usuario' => $usuario, 'time' => Carbon::now()], Carbon::now()->addMinutes(getenv('SESSION_EXPIRATION')));
-                }
-
-                return $next($request);
-            }
-
-            return response()->json([
-                'message' => 'Unauthenticated.'], 401);
-
-        } catch (\GuzzleHttp\Exception\ClientException $e) {
-            throw $e;
-        }
-    }
-    */
 }
