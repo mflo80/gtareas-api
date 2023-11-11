@@ -23,6 +23,7 @@ Route::controller(TareaController::class)
     Route::get('/tareas', 'buscar');
     Route::get('/tareas/{tarea}', 'buscar_tarea');
     Route::put('/tareas/{tarea}', 'modificar');
+    Route::put('/tareas/categoria/{tarea}', 'modificar_categoria');
     Route::delete('/tareas/{tarea}', 'eliminar');
 });
 

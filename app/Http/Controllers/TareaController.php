@@ -113,6 +113,32 @@ class TareaController extends Controller
         }
     }
 
+    public function modificar_categoria(Request $request, Tarea $tarea)
+    {
+        try {
+            $tarea->categoria = $request->post('categoria');
+
+            if ($tarea->isDirty()) {
+                $tarea->save();
+                    return response()->json([
+                    'status' => true,
+                    'message' => 'Categoría modificada correctamente.'
+                ], 200);
+            }
+
+            return response()->json([
+                'status' => false,
+                'message' => 'No se ha realizado ninguna modificación.'
+            ], 200);
+
+        } catch (\Throwable $th) {
+            return response()->json([
+                'status' => false,
+                'message' => $th->getMessage()
+            ], 500);
+        }
+    }
+
     public function eliminar($id)
     {
         try {
