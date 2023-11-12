@@ -24,7 +24,7 @@ class TareaFactory extends Factory
             'fecha_hora_inicio' => now(),
             'fecha_hora_fin' => now()->addDays(7),
             'categoria' => $this->faker->randomElement(['Análisis', 'Diseño', 'Implementación', 'Verificación', 'Mantenimiento']),
-            'estado' => $this->faker->randomElement(['Activa', 'Atrasada', 'Cancelada', 'En espera', 'Finalizada']),
+            'estado' => $this->faker->randomElement(['Activa', 'Atrasada', 'En espera', 'Cancelada', 'Finalizada']),
             'id_usuario' => $this->faker->numberBetween(1, 20),
         ];
     }
