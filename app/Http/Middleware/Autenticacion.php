@@ -26,7 +26,7 @@ class Autenticacion
                 $datos = Cache::get($token);
                 $ultimo_acceso = $datos['ultimo_acceso'];
 
-                if (Carbon::now()->diffInMinutes($ultimo_acceso) >= 20) {
+                if (Carbon::now()->diffInMinutes($ultimo_acceso) >= getenv('SESSION_LASTACCESS')) {
                     $usuario = $this->getUsuarioFromServer($token);
                     if (!$usuario) {
                         return response()->json([
