@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Tarea;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TareaController extends Controller
 {
@@ -19,6 +20,7 @@ class TareaController extends Controller
             $tarea->fecha_hora_fin = $request->post('fecha_hora_fin');
             $tarea->categoria = $request->post('categoria');
             $tarea->estado = $request->post('estado');
+            $tarea->id_usuario_modificacion = $request->post('id_usuario');
             $tarea->id_usuario = $request->post('id_usuario');
             $tarea->save();
 
@@ -91,6 +93,7 @@ class TareaController extends Controller
             $tarea->fecha_hora_fin = $request->post('fecha_hora_fin');
             $tarea->categoria = $request->post('categoria');
             $tarea->estado = $request->post('estado');
+            $tarea->id_usuario_modificacion = $request->post('id_usuario_modificacion');
 
             if ($tarea->isDirty()) {
                 $tarea->save();
@@ -117,6 +120,7 @@ class TareaController extends Controller
     {
         try {
             $tarea->categoria = $request->post('categoria');
+            $tarea->id_usuario_modificacion = $request->post('id_usuario_modificacion');
 
             if ($tarea->isDirty()) {
                 $tarea->save();

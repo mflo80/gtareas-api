@@ -7,7 +7,7 @@ use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
-use Symfony\Component\HttpFoundation\Response;
+
 
 class Autenticacion
 {
@@ -16,6 +16,7 @@ class Autenticacion
      *
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
+
     public function handle(Request $request, Closure $next)
     {
         $token = $request->header('Authorization');

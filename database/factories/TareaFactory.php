@@ -17,6 +17,8 @@ class TareaFactory extends Factory
      */
     public function definition(): array
     {
+        $idUsuario = $this->faker->numberBetween(1, 20);
+
         return [
             'titulo' => $this->faker->text(20),
             'texto' => $this->faker->text(120),
@@ -25,7 +27,8 @@ class TareaFactory extends Factory
             'fecha_hora_fin' => now()->addDays(7),
             'categoria' => $this->faker->randomElement(['Análisis', 'Diseño', 'Implementación', 'Verificación', 'Mantenimiento']),
             'estado' => $this->faker->randomElement(['Activa', 'Atrasada', 'En espera', 'Cancelada', 'Finalizada']),
-            'id_usuario' => $this->faker->numberBetween(1, 20),
+            'id_usuario_modificacion' => $idUsuario,
+            'id_usuario' => $idUsuario,
         ];
     }
 }
