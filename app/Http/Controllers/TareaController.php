@@ -25,6 +25,7 @@ class TareaController extends Controller
             $tarea->save();
 
             return response()->json([
+                'tarea_id' => $tarea->id,
                 'status' => true,
                 'message' => 'Tarea creada correctamente.'
             ], 200);
