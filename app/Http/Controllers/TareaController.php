@@ -3,9 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarea;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 
 class TareaController extends Controller
 {

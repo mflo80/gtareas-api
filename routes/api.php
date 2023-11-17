@@ -1,7 +1,7 @@
 <?php
 
-use App\Http\Controllers\HistorialController;
 use App\Http\Controllers\TareaController;
+use App\Http\Controllers\TareaRegistroController;
 use App\Http\Controllers\UsuarioComentaTareaController;
 use App\Http\Controllers\UsuarioAsignaTareaController;
 use Illuminate\Support\Facades\Route;
@@ -48,18 +48,11 @@ Route::controller(UsuarioAsignaTareaController::class)
     Route::get('/asigna/tarea/{id_tarea}', 'buscar_tarea');
     Route::get('/asigna/usuario/creador/{id_usuario}', 'buscar_usuario_creador');
     Route::get('/asigna/usuario/asignado/{id_usuario}', 'buscar_usuario_asignado');
-    Route::put('/asigna/{id_usuario_creador}/{id_usuario_asignado}/{id_tarea}', 'modificar');
     Route::delete('/asigna/{id_usuario_creador}/{id_usuario_asignado}/{id_tarea}', 'eliminar');
 });
 
-Route::controller(HistorialController::class)
+Route::controller(TareaRegistroController::class)
         ->middleware('autenticacion')
         ->group(function () {
-    Route::post('/historial', 'guardar');
     Route::get('/historial', 'buscar');
-    Route::get('/historial/{historial}', 'buscar_historial');
-    Route::get('/historial/tarea/{id_tarea}', 'buscar_tarea');
-    Route::get('/historial/usuario/{id_usuario}', 'buscar_usuario');
-    Route::put('/historial/{historial}', 'modificar');
-    Route::delete('/historial/{historial}', 'eliminar');
 });

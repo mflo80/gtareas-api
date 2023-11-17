@@ -16,15 +16,26 @@ class UsuarioCreaTareaFactory extends Factory
      */
     public function definition(): array
     {
-        static $id_tarea = 1;
+        static $index = 0;
 
-        $id_usuario_creador = $this->faker->numberBetween(1, 21);
+        $tareas = \App\Models\Tarea::all();
 
-        return [
-            'id_usuario_creador' => $id_usuario_creador,
-            'id_usuario_asignado' => $id_usuario_creador,
-            'id_tarea' => $id_tarea++,
+        if ($index >= count($tareas)) {
+            $index = 1;
+        }
+
+        $tarea = $tareas[$index];
+        $id_usuario = $tarea['id_usuario'];
+
+        $result = [
+            'id_usuario_creador' => $id_usuario,
+            'id_usuario_asignado' => $id_usuario,
+            'id_tarea' => $tarea['id'],
             'fecha_hora_asignacion' => now(),
         ];
+
+        $index++;
+
+        return $result;
     }
 }

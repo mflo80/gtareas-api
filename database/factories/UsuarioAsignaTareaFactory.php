@@ -18,16 +18,34 @@ class UsuarioAsignaTareaFactory extends Factory
     {
         $id_usuario_creador = $this->faker->numberBetween(1, 21);
         $id_usuario_asignado = $this->faker->numberBetween(1, 21);
+        $id_tarea = $this->faker->numberBetween(1, 250);
 
         while ($id_usuario_creador == $id_usuario_asignado) {
             $id_usuario_asignado = $this->faker->numberBetween(1, 21);
         }
 
-        return [
-            'id_usuario_creador' => $id_usuario_creador,
-            'id_usuario_asignado' => $id_usuario_asignado,
-            'id_tarea' => $this->faker->numberBetween(1, 250),
-            'fecha_hora_asignacion' => now(),
-        ];
+        $asignacionExistente = \App\Models\UsuarioAsignaTarea::where('id_tarea', $id_tarea)
+                                                        ->where('id_usuario_creador', $id_usuario_creador)
+                                                        ->where('id_usuario_asignado', $id_usuario_asignado)
+                                                        ->first();
+
+        if ($asignacionExistente) {
+            return [];
+        }
+
+        $creadorExistente = \App\Models\UsuarioAsignaTarea::where('id_tarea', $id_tarea)
+                                                        ->where('id_usuario_creador', $id_usuario_creador)
+                                                        ->first();
+
+        if ($creadorExistente){
+            return [
+                'id_usuario_creador' => $id_usuario_creador,
+                'id_usuario_asignado' => $id_usuario_asignado,
+                'id_tarea' => $id_tarea,
+                'fecha_hora_asignacion' => now(),
+            ];
+        }
+
+        return [];
     }
 }

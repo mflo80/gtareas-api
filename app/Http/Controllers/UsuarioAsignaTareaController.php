@@ -118,7 +118,7 @@ class UsuarioAsignaTareaController extends Controller
             }
 
             return response()->json([
-                'tareas_asignada' => $usuarioAsignaTarea,
+                'tarea_asignada' => $usuarioAsignaTarea,
                 'status' => true,
                 'message' => 'Tareas asignadas encontradas.'
             ], 200);
@@ -126,34 +126,6 @@ class UsuarioAsignaTareaController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => $th->getMessage()
-            ], 500);
-        }
-    }
-
-    public function modificar(Request $request, $id_usuario_creador, $id_usuario_asignado, $id_tarea)
-    {
-        try {
-            $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_tarea', $id_tarea)
-                ->where('id_usuario_creador', $id_usuario_creador)
-                ->where('id_usuario_asignado', $id_usuario_asignado)
-                ->firstOrFail();
-
-            $usuarioAsignaTarea->estado = $request->post('estado');
-            $usuarioAsignaTarea->save();
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Tarea asignada modificada correctamente.'
-            ], 200);
-        } catch (ModelNotFoundException $ex) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Tarea asignada no encontrada.'
-            ], 404);
-        } catch (\Throwable $th) {
-            return response()->json([
-                'status' => false,
-                'message' => $th->getMessage(),
             ], 500);
         }
     }

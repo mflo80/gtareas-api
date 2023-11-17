@@ -16,6 +16,6 @@ class DatabaseSeeder extends Seeder
 
         \App\Models\Tarea::factory($cantidadTareas)->create();
         \App\Models\UsuarioCreaTarea::factory($cantidadTareas)->create();
-        \App\Models\UsuarioAsignaTarea::factory(400)->create();
+        \App\Models\UsuarioAsignaTarea::factory(2000)->create();
     }
 }
