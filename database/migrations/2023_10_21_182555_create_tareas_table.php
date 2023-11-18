@@ -55,7 +55,7 @@ return new class extends Migration
             FOR EACH ROW
             BEGIN
                 INSERT INTO tareas_registro(evento, id_tarea, old_titulo, old_texto, old_fecha_hora_creacion, old_fecha_hora_inicio, old_fecha_hora_fin, old_categoria, old_estado, old_id_usuario, new_titulo, new_texto, new_fecha_hora_creacion, new_fecha_hora_inicio, new_fecha_hora_fin, new_categoria, new_estado, new_id_usuario, fecha_hora_modificacion, id_usuario_modificacion)
-                VALUES('Creado', NEW.id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NEW.titulo, NEW.texto, NEW.fecha_hora_creacion, NEW.fecha_hora_inicio, NEW.fecha_hora_fin, NEW.categoria, NEW.estado, NEW.id_usuario, NOW(), NEW.id_usuario_modificacion);
+                VALUES('Creada', NEW.id, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NEW.titulo, NEW.texto, NEW.fecha_hora_creacion, NEW.fecha_hora_inicio, NEW.fecha_hora_fin, NEW.categoria, NEW.estado, NEW.id_usuario, NOW(), NEW.id_usuario_modificacion);
             END"
         );
 
@@ -65,19 +65,23 @@ return new class extends Migration
             ON tareas
             FOR EACH ROW
             BEGIN
-                INSERT INTO tareas_registro(evento, id_tarea, old_titulo, old_texto, old_fecha_hora_creacion, old_fecha_hora_inicio, old_fecha_hora_fin, old_categoria, old_estado, old_id_usuario, new_titulo, new_texto, new_fecha_hora_creacion, new_fecha_hora_inicio, new_fecha_hora_fin, new_categoria, new_estado, new_id_usuario, fecha_hora_modificacion, id_usuario_modificacion)
-                VALUES('Modificado', OLD.id, OLD.titulo, OLD.texto, OLD.fecha_hora_creacion, OLD.fecha_hora_inicio, OLD.fecha_hora_fin, OLD.categoria, OLD.estado, OLD.id_usuario, NEW.titulo, NEW.texto, NEW.fecha_hora_creacion, NEW.fecha_hora_inicio, NEW.fecha_hora_fin, NEW.categoria, NEW.estado, NEW.id_usuario, NOW(), NEW.id_usuario_modificacion);
+                IF OLD.deleted_at IS NULL AND NEW.deleted_at IS NULL THEN
+                    INSERT INTO tareas_registro(evento, id_tarea, old_titulo, old_texto, old_fecha_hora_creacion, old_fecha_hora_inicio, old_fecha_hora_fin, old_categoria, old_estado, old_id_usuario, new_titulo, new_texto, new_fecha_hora_creacion, new_fecha_hora_inicio, new_fecha_hora_fin, new_categoria, new_estado, new_id_usuario, fecha_hora_modificacion, id_usuario_modificacion)
+                    VALUES('Modificada', OLD.id, OLD.titulo, OLD.texto, OLD.fecha_hora_creacion, OLD.fecha_hora_inicio, OLD.fecha_hora_fin, OLD.categoria, OLD.estado, OLD.id_usuario, NEW.titulo, NEW.texto, NEW.fecha_hora_creacion, NEW.fecha_hora_inicio, NEW.fecha_hora_fin, NEW.categoria, NEW.estado, NEW.id_usuario, NOW(), NEW.id_usuario_modificacion);
+                END IF;
             END"
         );
 
         DB::unprepared("
             CREATE TRIGGER after_tareas_delete
-            AFTER DELETE
+            AFTER UPDATE
             ON tareas
             FOR EACH ROW
             BEGIN
-                INSERT INTO tareas_registro(evento, id_tarea, old_titulo, old_texto, old_fecha_hora_creacion, old_fecha_hora_inicio, old_fecha_hora_fin, old_categoria, old_estado, old_id_usuario, new_titulo, new_texto, new_fecha_hora_creacion, new_fecha_hora_inicio, new_fecha_hora_fin, new_categoria, new_estado, new_id_usuario, fecha_hora_modificacion, id_usuario_modificacion)
-                VALUES('Eliminado', OLD.id, OLD.titulo, OLD.texto, OLD.fecha_hora_creacion, OLD.fecha_hora_inicio, OLD.fecha_hora_fin, OLD.categoria, OLD.estado, OLD.id_usuario, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NOW(), OLD.id_usuario_modificacion);
+                IF OLD.deleted_at IS NULL AND NEW.deleted_at IS NOT NULL THEN
+                    INSERT INTO tareas_registro(evento, id_tarea, old_titulo, old_texto, old_fecha_hora_creacion, old_fecha_hora_inicio, old_fecha_hora_fin, old_categoria, old_estado, old_id_usuario, new_titulo, new_texto, new_fecha_hora_creacion, new_fecha_hora_inicio, new_fecha_hora_fin, new_categoria, new_estado, new_id_usuario, fecha_hora_modificacion, id_usuario_modificacion)
+                    VALUES('Eliminada', OLD.id, OLD.titulo, OLD.texto, OLD.fecha_hora_creacion, OLD.fecha_hora_inicio, OLD.fecha_hora_fin, OLD.categoria, OLD.estado, OLD.id_usuario, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NOW(), OLD.id_usuario_modificacion);
+                END IF;
             END"
         );
     }

@@ -148,13 +148,15 @@ class TareaController extends Controller
     public function eliminar($id)
     {
         try {
-            $usuario = Tarea::findOrFail($id);
-            $usuario->delete();
+            $tarea = Tarea::findOrFail($id);
+            $tarea->delete();
 
-            return response()->json([
-                'status' => true,
-                'message' => 'Tarea eliminada con éxito.'
-            ], 200);
+            if ($tarea->isDirty('deleted_at')) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Tarea eliminada con éxito.'
+                ], 200);
+            }
         } catch (ModelNotFoundException $ex) {
             return response()->json([
                 'status' => true,
