@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\UsuarioComentaTarea;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use DateTime;
 
 class UsuarioComentaTareaController extends Controller
 {
@@ -16,6 +17,7 @@ class UsuarioComentaTareaController extends Controller
             $usuarioComentaTarea->id_tarea = $request->post('id_tarea');
             $usuarioComentaTarea->comentario = $request->post('comentario');
             $usuarioComentaTarea->fecha_hora_creacion = now();
+            $usuarioComentaTarea->fecha_hora_modificacion = now();
             $usuarioComentaTarea->save();
 
             return response()->json([
@@ -101,13 +103,10 @@ class UsuarioComentaTareaController extends Controller
         }
     }
 
-    public function buscar_comentario($id_usuario, $id_tarea, $fecha_hora_creacion)
+    public function buscar_comentario($id)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id_usuario', $id_usuario)
-                ->where('id_tarea', $id_tarea)
-                ->where('fecha_hora_creacion', $fecha_hora_creacion)
-                ->firstOrFail();
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
 
             return response()->json([
                 'tarea' => $usuarioComentaTarea,
@@ -127,17 +126,14 @@ class UsuarioComentaTareaController extends Controller
         }
     }
 
-    public function modificar(Request $request, $id_usuario, $id_tarea, $fecha_hora_creacion)
+    public function modificar(Request $request, $id)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id_usuario', $id_usuario)
-                ->where('id_tarea', $id_tarea)
-                ->where('fecha_hora_creacion', $fecha_hora_creacion)
-                ->firstOrFail();
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
 
-                $usuarioComentaTarea->comentario = $request->post('comentario');
-                $usuarioComentaTarea->fecha_hora_modificacion = now();
-                $usuarioComentaTarea->save();
+            $usuarioComentaTarea->comentario = $request->post('comentario');
+            $usuarioComentaTarea->fecha_hora_modificacion = now();
+            $usuarioComentaTarea->save();
 
             return response()->json([
                 'status' => true,
@@ -156,13 +152,10 @@ class UsuarioComentaTareaController extends Controller
         }
     }
 
-    public function eliminar($id_usuario, $id_tarea, $fecha_hora_creacion)
+    public function eliminar($id)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id_usuario', $id_usuario)
-                ->where('id_tarea', $id_tarea)
-                ->where('fecha_hora_creacion', $fecha_hora_creacion)
-                ->firstOrFail();
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
 
             $usuarioComentaTarea->delete();
 

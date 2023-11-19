@@ -13,11 +13,7 @@ class UsuarioComentaTarea extends Model
 
     protected $table = 'usuario_comenta_tarea';
 
-    protected $primaryKey = 'id_usuario';
-
-    public $incrementing = false;
-
-    protected $keyType = 'string';
+    protected $primaryKey = 'id';
 
     protected $fillable = [
         'id_usuario',

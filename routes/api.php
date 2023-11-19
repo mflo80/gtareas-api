@@ -42,9 +42,9 @@ Route::controller(UsuarioComentaTareaController::class)
     Route::get('/comenta', 'buscar');
     Route::get('/comenta/tarea/{id_tarea}', 'buscar_tarea');
     Route::get('/comenta/usuario/{id_usuario}', 'buscar_usuario');
-    Route::get('/comenta/usuario/{id_usuario}/{id_tarea}/{fecha_hora_creacion}', 'buscar_comentario');
-    Route::put('/comenta/usuario/{id_usuario}/{id_tarea}/{fecha_hora_creacion}', 'modificar');
-    Route::delete('/comenta/usuario/{id_usuario}/{id_tarea}/{fecha_hora_creacion}', 'eliminar');
+    Route::get('/comenta/{id}', 'buscar_comentario');
+    Route::put('/comenta/{id}', 'modificar');
+    Route::delete('/comenta/{id}', 'eliminar');
 });
 
 Route::controller(UsuarioAsignaTareaController::class)
