@@ -58,7 +58,7 @@ class UsuarioComentaTareaController extends Controller
     public function buscar_usuario($id_usuario)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id_usuario', $id_usuario)->firstOrFail();
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id_usuario', $id_usuario)->get();
 
             return response()->json([
                 'tarea' => $usuarioComentaTarea,
@@ -81,10 +81,10 @@ class UsuarioComentaTareaController extends Controller
     public function buscar_tarea($id_tarea)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id_tarea', $id_tarea)->firstOrFail();
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id_tarea', $id_tarea)->get();
 
             return response()->json([
-                'tarea' => $usuarioComentaTarea,
+                'comentario' => $usuarioComentaTarea,
                 'status' => true,
                 'message' => 'Tarea encontrada.'
             ], 200);

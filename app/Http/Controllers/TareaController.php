@@ -3,10 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Tarea;
-use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 
 class TareaController extends Controller
 {
@@ -28,7 +26,7 @@ class TareaController extends Controller
             return response()->json([
                 'tarea_id' => $tarea->id,
                 'status' => true,
-                'message' => 'Tarea creada correctamente.'
+                'message' => 'Tarea #' . $tarea->id . ' creada correctamente.'
             ], 200);
         } catch (\Throwable $th) {
             return response()->json([

@@ -4,6 +4,7 @@ use App\Http\Controllers\TareaController;
 use App\Http\Controllers\TareaRegistroController;
 use App\Http\Controllers\UsuarioComentaTareaController;
 use App\Http\Controllers\UsuarioAsignaTareaController;
+use App\Http\Controllers\EmailController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -26,6 +27,12 @@ Route::controller(TareaController::class)
     Route::put('/tareas/{tarea}', 'modificar');
     Route::put('/tareas/categoria/{tarea}', 'modificar_categoria');
     Route::delete('/tareas/{tarea}', 'eliminar');
+});
+
+Route::controller(EmailController::class)
+        ->middleware('autenticacion')
+        ->group(function () {
+    Route::post('/correos', 'enviar');
 });
 
 Route::controller(UsuarioComentaTareaController::class)
