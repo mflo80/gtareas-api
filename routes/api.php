@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\TareaController;
-use App\Http\Controllers\TareaRegistroController;
+use App\Http\Controllers\TareaHistorialController;
 use App\Http\Controllers\UsuarioComentaTareaController;
 use App\Http\Controllers\UsuarioAsignaTareaController;
 use App\Http\Controllers\EmailController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ComentarioHistorialController;
 
 /*
 |--------------------------------------------------------------------------
@@ -58,8 +59,14 @@ Route::controller(UsuarioAsignaTareaController::class)
     Route::delete('/asigna/{id_usuario_creador}/{id_usuario_asignado}/{id_tarea}', 'eliminar');
 });
 
-Route::controller(TareaRegistroController::class)
+Route::controller(TareaHistorialController::class)
         ->middleware('autenticacion')
         ->group(function () {
-    Route::get('/historial', 'buscar');
+    Route::get('/historial/tareas', 'buscar');
+});
+
+Route::controller(ComentarioHistorialController::class)
+        ->middleware('autenticacion')
+        ->group(function () {
+    Route::get('/historial/comentarios', 'buscar');
 });

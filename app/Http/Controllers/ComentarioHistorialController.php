@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\TareaRegistro;
+use App\Models\ComentarioHistorial;
 
-class TareaRegistroController extends Controller
+class ComentarioHistorialController extends Controller
 {
     public function buscar()
     {
         try {
-            $tareas = TareaRegistro::all();
+            $comentarios = ComentarioHistorial::all();
 
-            if($tareas->isEmpty()) {
+            if($comentarios->isEmpty()) {
                 return response()->json([
                     'status' => true,
                     'message' => 'No hay registros.'
@@ -19,7 +19,7 @@ class TareaRegistroController extends Controller
             }
 
             return response()->json([
-                'tareas' => $tareas,
+                'comentarios' => $comentarios,
                 'status' => true,
                 'message' => 'Registros encontrados.'
             ], 200);
