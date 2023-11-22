@@ -10,14 +10,17 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('tareas', function (Blueprint $table) {
+            $categorias = explode(',', getenv('CATEGORIAS'));
+            $estados = explode(',', getenv('ESTADOS'));
+
             $table->id();
             $table->string('titulo');
             $table->string('texto');
             $table->dateTime('fecha_hora_creacion');
             $table->dateTime('fecha_hora_inicio');
             $table->dateTime('fecha_hora_fin');
-            $table->enum('categoria', ['Análisis', 'Diseño', 'Implementación', 'Verificación', 'Mantenimiento'])->default('Análisis');
-            $table->enum('estado', ['Activa', 'Atrasada', 'En espera', 'Cancelada', 'Finalizada'])->default('Activa');
+            $table->enum('categoria', $categorias)->default('Análisis');
+            $table->enum('estado', $estados)->default('Activa');
             $table->bigInteger('id_usuario_modificacion');
             $table->foreignId('id_usuario')->constrained('users');
             $table->softDeletes();
