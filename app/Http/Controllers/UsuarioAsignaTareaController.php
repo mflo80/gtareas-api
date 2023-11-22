@@ -133,21 +133,19 @@ class UsuarioAsignaTareaController extends Controller
     public function eliminar($id_usuario_creador, $id_usuario_asignado, $id_tarea)
     {
         try {
-            $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_tarea', $id_tarea)
-                ->where('id_usuario_creador', $id_usuario_creador)
-                ->where('id_usuario_asignado', $id_usuario_asignado)
-                ->firstOrFail();
-
-            $usuarioAsignaTarea->delete();
+            $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_usuario_creador', $id_usuario_creador)
+            ->where('id_usuario_asignado', $id_usuario_asignado)
+            ->where('id_tarea', $id_tarea)
+            ->delete();
 
             return response()->json([
                 'status' => true,
-                'message' => 'Tarea asignada eliminada correctamente.'
+                'message' => 'Usuario asignado eliminado correctamente.'
             ], 200);
         } catch (ModelNotFoundException $ex) {
             return response()->json([
                 'status' => true,
-                'message' => 'Tarea asignada no encontrada.'
+                'message' => 'Usuario asignado no encontrado.'
             ], 404);
         } catch (\Throwable $th) {
             return response()->json([
