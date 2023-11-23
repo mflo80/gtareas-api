@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('id_usuario_asignado')->constrained('users');
             $table->foreignId('id_tarea')->constrained('tareas');
             $table->dateTime('fecha_hora_asignacion');
-            $table->unique(['id_usuario_creador', 'id_usuario_asignado', 'id_tarea'], 'c_a_t_unique');
             $table->softDeletes();
         });
     }

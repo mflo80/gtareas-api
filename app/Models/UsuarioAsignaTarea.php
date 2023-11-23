@@ -13,11 +13,7 @@ class UsuarioAsignaTarea extends Model
 
     protected $table = 'usuario_asigna_tarea';
 
-    protected $primaryKey = 'id_usuario_creador';
-
     public $incrementing = false;
-
-    protected $keyType = 'string';
 
     protected $fillable = [
         'id_usuario_creador',

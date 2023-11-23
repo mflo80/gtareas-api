@@ -43,7 +43,7 @@ class TareaController extends Controller
 
             if($tareas->isEmpty()) {
                 return response()->json([
-                    'status' => true,
+                    'status' => false,
                     'message' => 'No hay tareas registradas.'
                 ], 404);
             }
@@ -73,7 +73,7 @@ class TareaController extends Controller
             ], 200);
         } catch (ModelNotFoundException $ex) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => 'Tarea no encontrada.'
             ], 404);
         } catch (\Throwable $th) {
@@ -94,6 +94,11 @@ class TareaController extends Controller
             $tarea->categoria = $request->post('categoria');
             $tarea->estado = $request->post('estado');
             $tarea->id_usuario_modificacion = $request->post('id_usuario_modificacion');
+            $tarea->id_usuario = $request->post('id_usuario');
+
+            if ($tarea->fecha_hora_creacion === null) {
+                $tarea->fecha_hora_creacion = now()->format('Y-m-d H:i:s');
+            }
 
             if ($tarea->isDirty()) {
                 $tarea->save();
@@ -157,7 +162,7 @@ class TareaController extends Controller
             }
         } catch (ModelNotFoundException $ex) {
             return response()->json([
-                'status' => true,
+                'status' => false,
                 'message' => 'Tarea no encontrada.'
             ], 404);
         } catch (\Throwable $th) {

@@ -11,6 +11,22 @@ class UsuarioAsignaTareaController extends Controller
     public function guardar(Request $request)
     {
         try {
+            $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_usuario_creador', $request->post('id_usuario_creador'))
+            ->where('id_usuario_asignado', $request->post('id_usuario_asignado'))
+            ->where('id_tarea', $request->post('id_tarea'))
+            ->first();
+
+            if($usuarioAsignaTarea) {
+                if ($usuarioAsignaTarea->trashed()) {
+                    $usuarioAsignaTarea->restore();
+                }
+
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Tarea asignada correctamente.'
+                ], 200);
+            }
+
             $usuarioAsignaTarea = new UsuarioAsignaTarea();
             $usuarioAsignaTarea->id_usuario_creador = $request->post('id_usuario_creador');
             $usuarioAsignaTarea->id_usuario_asignado = $request->post('id_usuario_asignado');
