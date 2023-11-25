@@ -84,9 +84,11 @@ class TareaController extends Controller
         }
     }
 
-    public function modificar(Request $request, Tarea $tarea)
+    public function modificar(Request $request, $id)
     {
         try {
+            $tarea = Tarea::findOrFail($id);
+
             $tarea->titulo = $request->post('titulo');
             $tarea->texto = $request->post('texto');
             $tarea->fecha_hora_inicio = $request->post('fecha_hora_inicio');
@@ -111,8 +113,12 @@ class TareaController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'No se ha realizado ninguna modificación.'
-            ], 200);
-
+            ], 204);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tarea no encontrada.'
+            ], 404);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -121,9 +127,11 @@ class TareaController extends Controller
         }
     }
 
-    public function modificar_categoria(Request $request, Tarea $tarea)
+    public function modificar_categoria(Request $request, $id)
     {
         try {
+            $tarea = Tarea::findOrFail($id);
+
             $tarea->categoria = $request->post('categoria');
             $tarea->id_usuario_modificacion = $request->post('id_usuario_modificacion');
 
@@ -138,8 +146,12 @@ class TareaController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'No se ha realizado ninguna modificación.'
-            ], 200);
-
+            ], 204);
+        } catch (ModelNotFoundException $ex) {
+            return response()->json([
+                'status' => false,
+                'message' => 'Tarea no encontrada.'
+            ], 404);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,
@@ -154,7 +166,7 @@ class TareaController extends Controller
             $tarea = Tarea::findOrFail($id);
             $tarea->delete();
 
-            if ($tarea->isDirty('deleted_at')) {
+            if ($tarea->trashed()) {
                 return response()->json([
                     'status' => true,
                     'message' => 'Tarea eliminada con éxito.'

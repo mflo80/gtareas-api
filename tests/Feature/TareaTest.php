@@ -81,7 +81,7 @@ class TareaTest extends TestCase
             'id_usuario' => 21,
         ];
 
-        $response = $this->putJson('api/tareas/2', $datos);
+        $response = $this->putJson('api/tareas/251', $datos);
 
         $this->assertEquals(200, $response->getStatusCode());
 
@@ -90,6 +90,79 @@ class TareaTest extends TestCase
             'message' => 'Tarea modificada correctamente.'
         ]);
     }
+
+    public function test_modificar_categoria()
+    {
+        $datos = [
+            'titulo' => 'Título de prueba actualizado',
+            'texto' => 'Texto de prueba actualizado',
+            'fecha_hora_creacion' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_inicio' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_fin' => now()->addDay()->format('Y-m-d H:i:s'),
+            'categoria' => 'Análisis',
+            'estado' => 'En espera',
+            'id_usuario_modificacion' => 21,
+            'id_usuario' => 21,
+        ];
+
+        $response = $this->putJson('api/tareas/categoria/251', $datos);
+
+        $this->assertEquals(200, $response->getStatusCode());
+
+        $response->assertJsonFragment([
+            'status' => true,
+            'message' => 'Categoría modificada correctamente.'
+        ]);
+    }
+
+
+    public function test_modificar_incorrecto()
+    {
+        $datos = [
+            'titulo' => 'Título de prueba actualizado',
+            'texto' => 'Texto de prueba actualizado',
+            'fecha_hora_creacion' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_inicio' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_fin' => now()->addDay()->format('Y-m-d H:i:s'),
+            'categoria' => 'Diseño',
+            'estado' => 'Otros',
+            'id_usuario_modificacion' => 21,
+            'id_usuario' => 21,
+        ];
+
+        $response = $this->putJson('api/tareas/251', $datos);
+
+        $this->assertEquals(500, $response->getStatusCode());
+
+        $response->assertJsonFragment([
+            'status' => false,
+        ]);
+    }
+
+    public function test_modificar_tarea_inexistente()
+    {
+        $datos = [
+            'titulo' => 'Título de prueba actualizado',
+            'texto' => 'Texto de prueba actualizado',
+            'fecha_hora_creacion' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_inicio' => now()->format('Y-m-d H:i:s'),
+            'fecha_hora_fin' => now()->addDay()->format('Y-m-d H:i:s'),
+            'categoria' => 'Diseño',
+            'estado' => 'En espera',
+            'id_usuario_modificacion' => 21,
+            'id_usuario' => 21,
+        ];
+
+        $response = $this->putJson('api/tareas/1000', $datos);
+
+        $this->assertEquals(404, $response->getStatusCode());
+
+        $response->assertJsonFragment([
+            'status' => false,
+            'message' => 'Tarea no encontrada.'
+        ]);
+    }
+
 
     public function test_eliminar()
     {
@@ -100,6 +173,18 @@ class TareaTest extends TestCase
         $response->assertJsonFragment([
             'status' => true,
             'message' => 'Tarea eliminada con éxito.'
+        ]);
+    }
+
+    public function test_eliminar_tarea_inexistente()
+    {
+        $response = $this->deleteJson('api/tareas/1000');
+
+        $this->assertEquals(404, $response->getStatusCode());
+
+        $response->assertJsonFragment([
+            'status' => false,
+            'message' => 'Tarea no encontrada.'
         ]);
     }
 }
