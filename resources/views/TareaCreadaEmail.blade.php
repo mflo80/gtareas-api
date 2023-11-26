@@ -62,6 +62,9 @@
     <div class="usuarios-asignados">
         <p><b>Usuarios Asignados:</b> {{ implode(', ', $mailData['usuarios_asignados']) }}.</p>
     </div>
+    <div class="usuarios-asignados">
+        <p><b>Usuarios Eliminados:</b> {{ implode(', ', $mailData['usuarios_eliminados']) }}.</p>
+    </div>
     <br>
     <div class="saludo">
         <p>Saluda atentamente</p>

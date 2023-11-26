@@ -6,12 +6,15 @@ use App\Models\UsuarioComentaTarea;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use DateTime;
+use Illuminate\Support\Facades\Cache;
 
 class UsuarioComentaTareaController extends Controller
 {
     public function guardar(Request $request)
     {
         try {
+            Cache::forget('usuarioComentaTarea');
+
             $usuarioComentaTarea = new UsuarioComentaTarea();
             $usuarioComentaTarea->id_usuario = $request->post('id_usuario');
             $usuarioComentaTarea->id_tarea = $request->post('id_tarea');
@@ -35,7 +38,9 @@ class UsuarioComentaTareaController extends Controller
     public function buscar()
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::all();
+            $usuarioComentaTarea = Cache::remember('usuarioComentaTarea', 60, function () {
+                return UsuarioComentaTarea::all();
+            });
 
             if($usuarioComentaTarea->isEmpty()) {
                 return response()->json([
@@ -129,8 +134,9 @@ class UsuarioComentaTareaController extends Controller
     public function modificar(Request $request, $id)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
+            Cache::forget('usuarioComentaTarea');
 
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
             $usuarioComentaTarea->comentario = $request->post('comentario');
             $usuarioComentaTarea->fecha_hora_modificacion = now();
             $usuarioComentaTarea->save();
@@ -155,8 +161,9 @@ class UsuarioComentaTareaController extends Controller
     public function eliminar($id)
     {
         try {
-            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
+            Cache::forget('usuarioComentaTarea');
 
+            $usuarioComentaTarea = UsuarioComentaTarea::where('id', $id)->firstOrFail();
             $usuarioComentaTarea->delete();
 
             return response()->json([

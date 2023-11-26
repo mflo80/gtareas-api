@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\Tarea;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class TareaController extends Controller
 {
     public function guardar(Request $request)
     {
         try {
+            Cache::forget('tareas');
+
             $tarea = new Tarea();
             $tarea->titulo = $request->post('titulo');
             $tarea->texto = $request->post('texto');
@@ -39,7 +42,9 @@ class TareaController extends Controller
     public function buscar()
     {
         try {
-            $tareas = Tarea::all();
+            $tareas = Cache::remember('tareas', 60, function () {
+                return Tarea::all();
+            });
 
             if($tareas->isEmpty()) {
                 return response()->json([
@@ -64,10 +69,10 @@ class TareaController extends Controller
     public function buscar_tarea($id)
     {
         try {
-            $usuario = Tarea::findOrFail($id);
+            $tarea = Tarea::findOrFail($id);
 
             return response()->json([
-                'tarea' => $usuario,
+                'tarea' => $tarea,
                 'status' => true,
                 'message' => 'Tarea encontrada.'
             ], 200);
@@ -87,8 +92,9 @@ class TareaController extends Controller
     public function modificar(Request $request, $id)
     {
         try {
-            $tarea = Tarea::findOrFail($id);
+            Cache::forget('tareas');
 
+            $tarea = Tarea::findOrFail($id);
             $tarea->titulo = $request->post('titulo');
             $tarea->texto = $request->post('texto');
             $tarea->fecha_hora_inicio = $request->post('fecha_hora_inicio');
@@ -104,7 +110,8 @@ class TareaController extends Controller
 
             if ($tarea->isDirty()) {
                 $tarea->save();
-                    return response()->json([
+
+                return response()->json([
                     'status' => true,
                     'message' => 'Tarea modificada correctamente.'
                 ], 200);
@@ -130,14 +137,16 @@ class TareaController extends Controller
     public function modificar_categoria(Request $request, $id)
     {
         try {
-            $tarea = Tarea::findOrFail($id);
+            Cache::forget('tareas');
 
+            $tarea = Tarea::findOrFail($id);
             $tarea->categoria = $request->post('categoria');
             $tarea->id_usuario_modificacion = $request->post('id_usuario_modificacion');
 
             if ($tarea->isDirty()) {
                 $tarea->save();
-                    return response()->json([
+
+                return response()->json([
                     'status' => true,
                     'message' => 'Categoría modificada correctamente.'
                 ], 200);
@@ -163,6 +172,8 @@ class TareaController extends Controller
     public function eliminar($id)
     {
         try {
+            Cache::forget('tareas');
+
             $tarea = Tarea::findOrFail($id);
             $tarea->delete();
 

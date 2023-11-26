@@ -5,12 +5,15 @@ namespace App\Http\Controllers;
 use App\Models\UsuarioAsignaTarea;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 
 class UsuarioAsignaTareaController extends Controller
 {
     public function guardar(Request $request)
     {
         try {
+            Cache::forget('usuarioAsignaTarea');
+
             $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_usuario_creador', $request->post('id_usuario_creador'))
             ->where('id_usuario_asignado', $request->post('id_usuario_asignado'))
             ->where('id_tarea', $request->post('id_tarea'))
@@ -49,7 +52,9 @@ class UsuarioAsignaTareaController extends Controller
     public function buscar()
     {
         try {
-            $usuarioAsignaTarea = UsuarioAsignaTarea::all();
+            $usuarioAsignaTarea = Cache::remember('usuarioAsignaTarea', 60, function () {
+                return UsuarioAsignaTarea::all();
+            });
 
             if($usuarioAsignaTarea->isEmpty()) {
                 return response()->json([
@@ -149,20 +154,24 @@ class UsuarioAsignaTareaController extends Controller
     public function eliminar($id_usuario_creador, $id_usuario_asignado, $id_tarea)
     {
         try {
+            Cache::forget('usuarioAsignaTarea');
+
             $usuarioAsignaTarea = UsuarioAsignaTarea::where('id_usuario_creador', $id_usuario_creador)
             ->where('id_usuario_asignado', $id_usuario_asignado)
             ->where('id_tarea', $id_tarea)
             ->delete();
 
+            if(!$usuarioAsignaTarea) {
+                return response()->json([
+                    'status' => true,
+                    'message' => 'Usuario asignado no encontrado.'
+                ], 404);
+            }
+
             return response()->json([
                 'status' => true,
                 'message' => 'Usuario asignado eliminado correctamente.'
             ], 200);
-        } catch (ModelNotFoundException $ex) {
-            return response()->json([
-                'status' => true,
-                'message' => 'Usuario asignado no encontrado.'
-            ], 404);
         } catch (\Throwable $th) {
             return response()->json([
                 'status' => false,

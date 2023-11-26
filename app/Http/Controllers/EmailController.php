@@ -8,8 +8,7 @@ use Illuminate\Http\Request;
 
 class EmailController extends Controller
 {
-    public function enviar(Request $request)
-    {
+    public function enviar(Request $request) {
         try {
             $tarea = new Tarea();
             $tarea->id_tarea = $request->post('id_tarea');
@@ -24,32 +23,54 @@ class EmailController extends Controller
             $tarea->id_usuario = $request->post('id_usuario');
             $nombre_usuario = $request->post('nombre_usuario');
             $usuarios_asignados = $request->post('usuarios_asignados');
+            $usuarios_eliminados = $request->post('usuarios_eliminados');
+            $tipo = $request->post('tipo');
 
-            $usuarios_email = array_map(function($usuario) {
-                return $usuario['email'];
-            }, $usuarios_asignados);
+            if (is_array($usuarios_asignados)) {
+                $usuarios_asignados_email = array_map(function($usuario) {
+                    return $usuario['email'];
+                }, $usuarios_asignados);
 
-            $usuarios_nombres = array_map(function($usuario) {
-                return $usuario['nombre'] . ' ' . $usuario['apellido'];
-            }, $usuarios_asignados);
+                $usuarios_asignados_nombres = array_map(function($usuario) {
+                    return $usuario['nombre'] . ' ' . $usuario['apellido'];
+                }, $usuarios_asignados);
+            }
 
-            foreach ($usuarios_email as $email) {
-                $datos = [
-                    'from' => getenv('MAIL_FROM_ADDRESS'),
-                    'to' => $email,
-                    'subject' => 'Creación de Tarea #' . $tarea->id_tarea,
-                    'titulo' => $tarea->titulo,
-                    'texto' => $tarea->texto,
-                    'solicitante' => $nombre_usuario,
-                    'fecha_creacion' =>  $tarea->fecha_hora_creacion,
-                    'fecha_hora_inicio' => $tarea->fecha_hora_inicio,
-                    'fecha_hora_fin' => $tarea->fecha_hora_fin,
-                    'categoria' => $tarea->categoria,
-                    'estado' => $tarea->estado,
-                    'usuarios_asignados' => $usuarios_nombres,
-                ];
+            if (is_array($usuarios_eliminados)) {
+                $usuarios_eliminados_email = array_map(function($usuario) {
+                    return $usuario['email'];
+                }, $usuarios_eliminados);
 
+                $usuarios_eliminados_nombres = array_map(function($usuario) {
+                    return $usuario['nombre'] . ' ' . $usuario['apellido'];
+                }, $usuarios_eliminados);
+            }
+
+            $datos = [
+                'from' => getenv('MAIL_FROM_ADDRESS'),
+                'subject' => ($tipo == 'creación' ? 'Creación' : 'Modificación') . ' de Tarea #' . $tarea->id_tarea,
+                'titulo' => $tarea->titulo,
+                'texto' => $tarea->texto,
+                'solicitante' => $nombre_usuario,
+                'fecha_creacion' =>  $tarea->fecha_hora_creacion,
+                'fecha_hora_inicio' => $tarea->fecha_hora_inicio,
+                'fecha_hora_fin' => $tarea->fecha_hora_fin,
+                'categoria' => $tarea->categoria,
+                'estado' => $tarea->estado,
+                'usuarios_asignados' => $usuarios_asignados_nombres,
+                'usuarios_eliminados' => $tipo == 'modificación' ? $usuarios_eliminados_nombres : [],
+            ];
+
+            foreach ($usuarios_asignados_email as $email) {
+                $datos['to'] = $email;
                 dispatch(new EmailJobs($datos));
+            }
+
+            if($tipo == 'modificación') {
+                foreach ($usuarios_eliminados_email as $email) {
+                    $datos['to'] = $email;
+                    dispatch(new EmailJobs($datos));
+                }
             }
 
             return response()->json([
@@ -63,4 +84,5 @@ class EmailController extends Controller
             ], 500);
         }
     }
+
 }
